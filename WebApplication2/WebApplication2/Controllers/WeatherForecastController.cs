@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Model;
+using WebApplication2;
+using WebApplication2.Model;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApplication1.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries =
@@ -14,7 +15,15 @@ namespace WebApplication1.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         ];
 
+        [Authorize]
         [HttpGet(Name = "GetWeatherForecast")]
+        //[SwaggerOperation(
+        //    Summary = "Creates a new product",
+        //    Description = "Requires admin privileges",
+        //    OperationId = "CreateProduct",
+        //    Tags = ["Purchase", "Products"]
+        //)]
+        //[Obsolete("This endpoint is deprecated. Use the new endpoint instead.")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -24,6 +33,14 @@ namespace WebApplication1.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost("upload", Name = "upload")]
+        [RequestFormLimits(MultipartBodyLengthLimit = 20900)]
+        public ActionResult UploadImage(IFormFile file)
+        {
+
+            return Ok(file.FileName);
         }
     }
 }

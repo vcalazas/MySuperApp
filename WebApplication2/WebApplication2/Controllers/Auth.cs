@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Model;
-using WebApplication1.Services;
+using WebApplication2.Model;
+using WebApplication2.Services;
 
 namespace WebApplication1.Controllers
 {

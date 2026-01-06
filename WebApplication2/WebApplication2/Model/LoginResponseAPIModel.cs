@@ -1,4 +1,4 @@
-﻿namespace WebApplication1.Model
+﻿namespace WebApplication2.Model
 {
     public class LoginResponseAPIModel
     {

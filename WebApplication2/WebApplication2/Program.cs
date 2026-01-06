@@ -1,17 +1,35 @@
-
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-using WebApplication1.Services;
+using WebApplication2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v2", new OpenApiInfo { Title = "My API", Version = "v2" });
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
+    c.EnableAnnotations();
+    c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -31,40 +49,21 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         SaveSigninToken = true,
-        
     };
 });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtService>();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Description = "JWT Authorization header using the Bearer scheme.",
-        In = ParameterLocation.Header,
-    });
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {
-        [new OpenApiSecuritySchemeReference("bearer", document)] = []
-    });
-});
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.MapSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "api1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "My API");
     });
 }
 
