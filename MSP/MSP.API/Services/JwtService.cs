@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MSP.Domain.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
-using MSP.API.Model;
 
 namespace MSP.API.Services
 {
@@ -16,7 +17,16 @@ namespace MSP.API.Services
             _configuration = configuration;
         }
 
-        public async Task<LoginResponseAPIModel> Authenticate(LoginRequestAPIModel request)
+        public async Task<UserDto> GenerateToken(UserDto user)
+        {
+            return await Authenticate(user, GenerateSecretToken());
+        }
+
+        public async Task<UserDto> GenerateRefreshToken(string? token, UserDto user) {
+            return await Authenticate(user, GenerateSecretToken());
+        }
+
+        public async Task<UserDto> Authenticate(UserDto request, string secretToken)
         {
             var issuer = _configuration["JwtConfig:Issuer"];
             var audience = _configuration["JwtConfig:Audience"];
@@ -27,7 +37,8 @@ namespace MSP.API.Services
             var tokenDescriptor = new SecurityTokenDescriptor {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Name, request.UserName)
+                    new Claim(JwtRegisteredClaimNames.Name, request.UserName),
+                    new Claim(JwtRegisteredClaimNames.Sid, secretToken)
                 }),
                 Expires = tokenExpiryTimeStamp,
                 Issuer = issuer,
@@ -40,12 +51,20 @@ namespace MSP.API.Services
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(securityToken);
 
-            return new LoginResponseAPIModel()
+            return new UserDto()
             {
                 AccessToken = accessToken,
                 UserName = request.UserName,
                 ExpiresIn = (int) tokenExpiryTimeStamp.Subtract(DateTime.UtcNow).TotalSeconds
             };
+        }
+
+        public string GenerateSecretToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

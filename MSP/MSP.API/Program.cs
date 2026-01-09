@@ -49,6 +49,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         SaveSigninToken = true,
+        
     };
 });
 builder.Services.AddAuthorization();
