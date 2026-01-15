@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using MSP.API.Services;
+using MSP.Data;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-using MSP.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,16 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtService>();
+
+builder.Services.AddDbContextPool<MSPContext>(
+    options => options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DatabaseConnection"),
+        opt =>
+        {
+            opt.SetPostgresVersion(13, 0);
+            opt.UseNodaTime();
+        }
+    ));
 
 var app = builder.Build();
 
