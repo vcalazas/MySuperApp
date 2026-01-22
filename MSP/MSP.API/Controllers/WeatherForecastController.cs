@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MSP.API;
-using MSP.API.Model;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApplication1.Controllers

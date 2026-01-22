@@ -1,5 +1,9 @@
 <Solution>
+  <Project Path="FrontEnd/frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="MSP.API/MSP.API.csproj" />
   <Project Path="MSP.Data/MSP.Data.csproj" Id="b233bfa9-4a49-4dd3-b300-35dd9192cfcc" />
   <Project Path="MSP.Domain/MSP.Domain.csproj" Id="81e08532-10a5-4268-8119-707a36b50fa4" />
-  <Project Path="MSP.API/MSP.API.csproj" />
 </Solution>
