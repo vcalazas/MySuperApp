@@ -67,6 +67,9 @@ builder.Services.AddDbContextPool<MSPContext>(
         }
     ));
 
+ServicesConfiguration.ConfigureRepositories(builder.Services);
+ServicesConfiguration.ConfigureBusiness(builder.Services);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

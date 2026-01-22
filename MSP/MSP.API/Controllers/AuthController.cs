@@ -19,7 +19,7 @@ namespace WebApplication1.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(UserDto request){
-            var result = await _jwtService.Authenticate(request);
+            var result = await _jwtService.Authenticate(request, "");
             if (result is null)
                 return Unauthorized();
 

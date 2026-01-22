@@ -6,5 +6,7 @@ namespace MSP.Domain.DTOs
 {
     public class MSPSystemSettingsDTO
     {
+        public string SettingKey { get; set; }
+        public string SettingValue { get; set; }
     }
 }
