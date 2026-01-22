@@ -28,10 +28,8 @@ namespace MSP.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<MSPSystemSettings>> GetAllAsync(string document, string name)
+        public async Task<IEnumerable<MSPSystemSettings>> GetAllAsync()
         {
-            if (string.IsNullOrEmpty(document)) document = "";
-            if (string.IsNullOrEmpty(name)) name = "";
             return await _context.MSPSystemSettings.ToListAsync();
         }
     }

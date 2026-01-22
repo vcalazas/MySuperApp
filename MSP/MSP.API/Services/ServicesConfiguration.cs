@@ -10,7 +10,6 @@ namespace MSP.API.Services
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
             services.AddTransient<ISystemSettingsRepository, SystemSettingsRepository>();
-
             return services;
         }
 
