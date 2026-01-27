@@ -8,6 +8,9 @@ namespace MSP.Domain.Repositories
     public interface ISystemSettingsRepository
     {
         Task<MSPSystemSettings> AddAsync(MSPSystemSettings mSPSystemSettings);
-        Task<IEnumerable<MSPSystemSettings>> GetAllAsync();
+        Task<IEnumerable<MSPSystemSettings>> GetAllAsync(bool enabledOnly);
+        Task<MSPSystemSettings?> GetAsync(string key);
+        Task<MSPSystemSettings> UpdateAsync(MSPSystemSettings mSPSystemSettings);
+        Task<MSPSystemSettings> DeleteAsync(MSPSystemSettings mSPSystemSettings);
     }
 }

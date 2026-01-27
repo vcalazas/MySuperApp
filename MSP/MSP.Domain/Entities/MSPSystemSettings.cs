@@ -9,20 +9,20 @@ using System.Text.Json.Serialization;
 
 namespace MSP.Domain.Entities
 {
-    public class MSPSystemSettings : IConvertModel<MSPSystemSettings, MSPSystemSettingsDTO>
+    public class MSPSystemSettings : MSPBaseEntity, IConvertModel<MSPSystemSettings, MSPSystemSettingsDTO>
     {
         [Key]
         public string SettingKey { get; set; }
         public string SettingValue { get; set; }
-
-        public DateTime Register { get; set; }
 
         [JsonIgnore]
         public MSPSystemSettingsDTO Convert => new MSPSystemSettingsDTO()
         {
             SettingKey = SettingKey,
             SettingValue = SettingValue,
-            Register = Register
+            DTBegin = DTBegin,
+            DTUpdate = DTUpdate,
+            DTEnd = DTEnd
         };
     }
 }

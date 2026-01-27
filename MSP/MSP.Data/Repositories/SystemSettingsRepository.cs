@@ -21,16 +21,41 @@ namespace MSP.Data.Repositories
 
         public async Task<MSPSystemSettings> AddAsync(MSPSystemSettings mSPSystemSettings)
         {
-            mSPSystemSettings.Register = DateTime.Now;
+            if(await GetAsync(mSPSystemSettings.SettingKey) != null)
+                throw new Exception($"Setting with key {mSPSystemSettings.SettingKey} already exists.");
+            mSPSystemSettings.DTBegin = DateTime.Now;
+            mSPSystemSettings.DTEnd = DateTime.MaxValue;
             _context.MSPSystemSettings.Add(mSPSystemSettings);
             await _context.SaveChangesAsync();
             return mSPSystemSettings;
         }
 
-
-        public async Task<IEnumerable<MSPSystemSettings>> GetAllAsync()
+        public async Task<IEnumerable<MSPSystemSettings>> GetAllAsync(bool enabledOnly)
         {
+            if(enabledOnly)
+                return await _context.MSPSystemSettings.Where(s => s.DTEnd > DateTime.Now).ToListAsync();
             return await _context.MSPSystemSettings.ToListAsync();
+        }
+
+        public async Task<MSPSystemSettings?> GetAsync(string key)
+        {
+            return (await _context.MSPSystemSettings.Where(s => s.SettingKey == key).ToListAsync()).FirstOrDefault();
+        }
+
+        public async Task<MSPSystemSettings> UpdateAsync(MSPSystemSettings mSPSystemSettings)
+        {
+            mSPSystemSettings.DTUpdate = DateTime.Now;
+            _context.MSPSystemSettings.Update(mSPSystemSettings);
+            await _context.SaveChangesAsync();
+            return mSPSystemSettings;
+        }
+
+        public async Task<MSPSystemSettings> DeleteAsync(MSPSystemSettings mSPSystemSettings)
+        {
+            mSPSystemSettings.DTEnd = DateTime.Now;
+            _context.MSPSystemSettings.Update(mSPSystemSettings);
+            await _context.SaveChangesAsync();
+            return mSPSystemSettings;
         }
     }
 }
