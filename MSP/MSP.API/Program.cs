@@ -1,10 +1,13 @@
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MSP.API.Services;
 using MSP.Data;
+using MSP.Domain.Entities;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -70,6 +73,15 @@ builder.Services.AddDbContextPool<MSPContext>(
 
 ServicesConfiguration.ConfigureRepositories(builder.Services);
 ServicesConfiguration.ConfigureBusiness(builder.Services);
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        // Optional: Custom date formatting if Newtonsoft's default isn't enough
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    });
+
 
 var app = builder.Build();
 

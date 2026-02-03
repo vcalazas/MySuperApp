@@ -45,7 +45,7 @@ namespace MSP.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MSPSystemSettingsDTO>> Post(MSPSystemSettingsDTO mSPSystemSettings)
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Post([FromBody] MSPSystemSettingsDTO mSPSystemSettings)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace MSP.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<MSPSystemSettingsDTO>> Put(MSPSystemSettingsDTO mSPSystemSettings)
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Put([FromBody] MSPSystemSettingsDTO mSPSystemSettings)
         {
             try
             {

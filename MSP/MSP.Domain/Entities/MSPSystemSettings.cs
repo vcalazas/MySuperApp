@@ -1,11 +1,7 @@
 ﻿using MSP.Domain.DTOs;
 using MSP.Domain.Helpers;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Text;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace MSP.Domain.Entities
 {
@@ -16,6 +12,7 @@ namespace MSP.Domain.Entities
         public string SettingValue { get; set; }
 
         [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public MSPSystemSettingsDTO Convert => new MSPSystemSettingsDTO()
         {
             SettingKey = SettingKey,
