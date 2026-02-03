@@ -12,7 +12,6 @@ namespace MSP.Domain.Entities
         public string SettingValue { get; set; }
 
         [JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
         public MSPSystemSettingsDTO Convert => new MSPSystemSettingsDTO()
         {
             SettingKey = SettingKey,
