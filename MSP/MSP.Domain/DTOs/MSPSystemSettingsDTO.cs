@@ -1,26 +1,22 @@
 ﻿using MSP.Domain.Entities;
 using MSP.Domain.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc; // Adicione este using
 
 namespace MSP.Domain.DTOs
 {
-    public class MSPSystemSettingsDTO : IConvertModel<MSPSystemSettingsDTO, MSPSystemSettings>
+    public class MSPSystemSettingsDTO : MSPBaseEntityDTO, IConvertModel<MSPSystemSettings>
     {
         public string SettingKey { get; set; }
-        public string SettingValue { get; set; }
+        public string? SettingValue { get; set; }
 
-        public DateTime Register { get; set; }
-
-        [JsonIgnore]
-        public MSPSystemSettings Convert => new MSPSystemSettings()
+        public MSPSystemSettings Convert() => new MSPSystemSettings()
         {
-            SettingKey = SettingKey,
-            SettingValue = SettingValue,
-            Register = Register
+            SettingKey = this.SettingKey,
+            SettingValue = this.SettingValue,
+            DTBegin = this.DTBegin,
+            DTUpdate = this.DTUpdate,
+            DTEnd = this.DTEnd
         };
     }
 }

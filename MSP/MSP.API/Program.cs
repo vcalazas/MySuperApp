@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MSP.API.Services;
 using MSP.Data;
+using MSP.Domain.Entities;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -57,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtService>();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddDbContextPool<MSPContext>(
     options => options.UseNpgsql(
         builder.Configuration.GetConnectionString("DatabaseConnection"),
@@ -69,6 +73,12 @@ builder.Services.AddDbContextPool<MSPContext>(
 
 ServicesConfiguration.ConfigureRepositories(builder.Services);
 ServicesConfiguration.ConfigureBusiness(builder.Services);
+builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    });
 
 var app = builder.Build();
 

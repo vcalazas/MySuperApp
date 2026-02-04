@@ -8,6 +8,9 @@ namespace MSP.Domain.Business
 {
     public interface ISystemSettingsBusiness
     {
-        Task<IEnumerable<MSPSystemSettingsDTO>> GetAllAsync();
+        Task<IEnumerable<MSPSystemSettingsDTO>> GetAllAsync(bool enabledOnly);
+        Task<MSPSystemSettingsDTO?> AddAsync(MSPSystemSettingsDTO mSPSystemSettings);
+        Task<MSPSystemSettingsDTO> UpdateAsync(MSPSystemSettingsDTO mSPSystemSettings);
+        Task<MSPSystemSettingsDTO> DeleteAsync(MSPSystemSettingsDTO mSPSystemSettings);
     }
 }

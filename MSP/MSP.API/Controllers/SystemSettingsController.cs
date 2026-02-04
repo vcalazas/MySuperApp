@@ -18,20 +18,64 @@ namespace MSP.API.Controllers
             _systemSettingsBusiness = systemSettingsBusiness;
         }
 
-        //[Authorize]
         [HttpGet]
-        //[SwaggerOperation(
-        //    Summary = "Creates a new product",
-        //    Description = "Requires admin privileges",
-        //    OperationId = "CreateProduct",
-        //    Tags = ["Purchase", "Products"]
-        //)]
-        //[Obsolete("This endpoint is deprecated. Use the new endpoint instead.")]
         public async Task<ActionResult<IEnumerable<MSPSystemSettingsDTO>>>  Get()
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.GetAllAsync());
+                return StatusCode(200, await _systemSettingsBusiness.GetAllAsync(false));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpGet("enabled")]
+        public async Task<ActionResult<IEnumerable<MSPSystemSettingsDTO>>> GetEnabled()
+        {
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.GetAllAsync(true));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Post(MSPSystemSettingsDTO mSPSystemSettings)
+        {
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Put(MSPSystemSettingsDTO mSPSystemSettings)
+        {
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.UpdateAsync(mSPSystemSettings));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Delete(MSPSystemSettingsDTO mSPSystemSettings)
+        {
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.DeleteAsync(mSPSystemSettings));
             }
             catch (Exception ex)
             {
