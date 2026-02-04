@@ -8,7 +8,7 @@ namespace MSP.Domain.DTOs
     public class MSPSystemSettingsDTO : MSPBaseEntityDTO, IConvertModel<MSPSystemSettings>
     {
         public string SettingKey { get; set; }
-        public string SettingValue { get; set; }
+        public string? SettingValue { get; set; }
 
         public MSPSystemSettings Convert() => new MSPSystemSettings()
         {

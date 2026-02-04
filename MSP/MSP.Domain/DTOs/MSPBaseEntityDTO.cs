@@ -6,8 +6,8 @@ namespace MSP.Domain.DTOs
 {
     public class MSPBaseEntityDTO
     {
-        public DateTime DTBegin { get; set; }
-        public DateTime DTUpdate { get; set; }
-        public DateTime DTEnd { get; set; }
+        public DateTime? DTBegin { get; set; }
+        public DateTime? DTUpdate { get; set; }
+        public DateTime? DTEnd { get; set; }
     }
 }

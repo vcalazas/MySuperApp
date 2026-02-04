@@ -52,10 +52,14 @@ namespace MSP.Data.Repositories
 
         public async Task<MSPSystemSettings> DeleteAsync(MSPSystemSettings mSPSystemSettings)
         {
-            mSPSystemSettings.DTEnd = DateTime.Now;
-            _context.MSPSystemSettings.Update(mSPSystemSettings);
+            MSPSystemSettings? data = await GetAsync(mSPSystemSettings.SettingKey);
+            if (data == null)
+                throw new Exception($"Setting with key {mSPSystemSettings.SettingKey} does not exist.");
+
+            data.DTEnd = DateTime.Now;
+            _context.MSPSystemSettings.Update(data);
             await _context.SaveChangesAsync();
-            return mSPSystemSettings;
+            return data;
         }
     }
 }

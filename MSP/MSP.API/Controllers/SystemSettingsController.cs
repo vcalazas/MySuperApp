@@ -69,5 +69,18 @@ namespace MSP.API.Controllers
                 return StatusCode(400, ex.Message);
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<MSPSystemSettingsDTO>> Delete(MSPSystemSettingsDTO mSPSystemSettings)
+        {
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.DeleteAsync(mSPSystemSettings));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
     }
 }
