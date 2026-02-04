@@ -37,7 +37,21 @@ namespace MSP.Domain.Business
         {
             if (MSPPerson == null)
                 return null;
-            var updatedEntity = await _repository.UpdateAsync(MSPPerson.Convert());
+
+            MSPPerson? data = await _repository.GetAsync(MSPPerson.Convert());
+            if (data == null)
+                throw new Exception($"Setting with key {MSPPerson.PersonId} does not exist.");
+
+            var updatedEntity = await _repository.UpdateAsync(new MSPPerson()
+            {
+                PersonId = data.PersonId,
+                Name = MSPPerson.Name ?? data.Name,
+                Login = MSPPerson.Login ?? data.Login,
+                Passworld = MSPPerson.Passworld ?? data.Passworld,
+                DTBegin = data.DTBegin,
+                DTUpdate = data.DTUpdate,
+                DTEnd = data.DTEnd
+            });
             return updatedEntity?.Convert();
         }
 

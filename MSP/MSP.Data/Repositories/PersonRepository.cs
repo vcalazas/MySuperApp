@@ -40,12 +40,6 @@ namespace MSP.Data.Repositories
 
         public async Task<MSPPerson> UpdateAsync(MSPPerson MSPPerson)
         {
-            MSPPerson? data = await GetAsync(MSPPerson);
-            if (data == null)
-                throw new Exception($"Setting with key {MSPPerson.PersonId} does not exist.");
-
-
-
             MSPPerson.DTUpdate = DateTime.Now;
             _context.MSPPerson.Update(MSPPerson);
             await _context.SaveChangesAsync();
