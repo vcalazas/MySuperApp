@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MSP.Domain.Business
+namespace MSP.Domain.BusinessInterfaces
 {
     public interface ISystemSettingsBusiness
     {

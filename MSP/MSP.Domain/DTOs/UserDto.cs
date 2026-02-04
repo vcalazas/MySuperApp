@@ -4,6 +4,7 @@ using System.Text;
 
 namespace MSP.Domain.DTOs
 {
+    [Obsolete("UserDto está obsoleto. Use MSPPerson em seu lugar.")]
     public  class UserDto
     {
         public string UserName { get; set; }

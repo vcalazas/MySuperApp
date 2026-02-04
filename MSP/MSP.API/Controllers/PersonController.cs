@@ -9,21 +9,21 @@ namespace MSP.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SystemSettingsController : ControllerBase
+    public class PersonController : ControllerBase
     {
-        private readonly ISystemSettingsBusiness _systemSettingsBusiness;
+        private readonly IPersonBusiness _personBusiness;
 
-        public SystemSettingsController(ISystemSettingsBusiness systemSettingsBusiness)
+        public PersonController(IPersonBusiness personBusiness)
         {
-            _systemSettingsBusiness = systemSettingsBusiness;
+            _personBusiness = personBusiness;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MSPSystemSettingsDTO>>>  Get()
+        public async Task<ActionResult<IEnumerable<MSPPersonDTO>>>  Get()
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.GetAllAsync(false));
+                return StatusCode(200, await _personBusiness.GetAllAsync(false));
             }
             catch (Exception ex)
             {
@@ -32,11 +32,11 @@ namespace MSP.API.Controllers
         }
 
         [HttpGet("enabled")]
-        public async Task<ActionResult<IEnumerable<MSPSystemSettingsDTO>>> GetEnabled()
+        public async Task<ActionResult<IEnumerable<MSPPersonDTO>>> GetEnabled()
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.GetAllAsync(true));
+                return StatusCode(200, await _personBusiness.GetAllAsync(true));
             }
             catch (Exception ex)
             {
@@ -45,11 +45,11 @@ namespace MSP.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MSPSystemSettingsDTO>> Post(MSPSystemSettingsDTO mSPSystemSettings)
+        public async Task<ActionResult<MSPPersonDTO>> Post(MSPPersonDTO MSPPerson)
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
+                return StatusCode(200, await _personBusiness.AddAsync(MSPPerson));
             }
             catch (Exception ex)
             {
@@ -58,11 +58,11 @@ namespace MSP.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<MSPSystemSettingsDTO>> Put(MSPSystemSettingsDTO mSPSystemSettings)
+        public async Task<ActionResult<MSPPersonDTO>> Put(MSPPersonDTO MSPPerson)
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.UpdateAsync(mSPSystemSettings));
+                return StatusCode(200, await _personBusiness.UpdateAsync(MSPPerson));
             }
             catch (Exception ex)
             {
@@ -71,11 +71,11 @@ namespace MSP.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<MSPSystemSettingsDTO>> Delete(MSPSystemSettingsDTO mSPSystemSettings)
+        public async Task<ActionResult<MSPPersonDTO>> Delete(MSPPersonDTO MSPPerson)
         {
             try
             {
-                return StatusCode(200, await _systemSettingsBusiness.DeleteAsync(mSPSystemSettings));
+                return StatusCode(200, await _personBusiness.DeleteAsync(MSPPerson));
             }
             catch (Exception ex)
             {

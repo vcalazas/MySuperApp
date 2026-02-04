@@ -1,5 +1,6 @@
 ﻿using MSP.Data.Repositories;
 using MSP.Domain.Business;
+using MSP.Domain.BusinessInterfaces;
 using MSP.Domain.Repositories;
 
 namespace MSP.API.Services
@@ -10,12 +11,14 @@ namespace MSP.API.Services
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
             services.AddTransient<ISystemSettingsRepository, SystemSettingsRepository>();
+            services.AddTransient<IPersonRepository, PersonRepository>();
             return services;
         }
 
         public static IServiceCollection ConfigureBusiness(this IServiceCollection services)
         {
             services.AddTransient<ISystemSettingsBusiness, SystemSettingsBusiness>();
+            services.AddTransient<IPersonBusiness, PersonBusiness>();
             return services;
         }
 

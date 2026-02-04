@@ -11,6 +11,7 @@ namespace MSP.Data
     public class MSPContext : DbContext
     {
         public virtual DbSet<MSPSystemSettings> MSPSystemSettings { get; set; }
+        public virtual DbSet<MSPPerson> MSPPerson { get; set; }
         public static int InstanceCount;
 
         public MSPContext(DbContextOptions options) : base(options)
@@ -21,6 +22,13 @@ namespace MSP.Data
             modelBuilder.Entity<MSPSystemSettings>(entity =>
             {
                 entity.HasIndex(p => p.SettingKey).IsUnique();
+            });
+
+            modelBuilder.Entity<MSPPerson>(entity =>
+            {
+                entity.HasIndex(p => p.PersonId).IsUnique();
+                entity.Property(f => f.PersonId)
+                        .ValueGeneratedOnAdd();
             });
         }
     }
