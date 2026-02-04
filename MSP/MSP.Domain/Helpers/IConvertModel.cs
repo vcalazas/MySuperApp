@@ -5,9 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace MSP.Domain.Helpers
 {
-    public interface IConvertModel<TSource, TTarget>
+    public interface IConvertModel<TTarget>
     {
-        [JsonIgnore]
-        TTarget Convert { get; }
+        TTarget Convert();
     }
 }

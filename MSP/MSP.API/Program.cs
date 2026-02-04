@@ -73,22 +73,12 @@ builder.Services.AddDbContextPool<MSPContext>(
 
 ServicesConfiguration.ConfigureRepositories(builder.Services);
 ServicesConfiguration.ConfigureBusiness(builder.Services);
-builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-        // Optional: Custom date formatting if Newtonsoft's default isn't enough
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
     });
-
-builder.Services.AddMvc()
-    .AddMvcOptions(options =>
-    {
-        options.MaxModelValidationErrors = 999999;
-    });
-
 
 var app = builder.Build();
 

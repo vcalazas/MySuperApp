@@ -5,20 +5,19 @@ using Newtonsoft.Json;
 
 namespace MSP.Domain.Entities
 {
-    public class MSPSystemSettings : MSPBaseEntity, IConvertModel<MSPSystemSettings, MSPSystemSettingsDTO>
+    public class MSPSystemSettings : MSPBaseEntity, IConvertModel<MSPSystemSettingsDTO>
     {
         [Key]
         public string SettingKey { get; set; }
         public string SettingValue { get; set; }
 
-        [JsonIgnore]
-        public MSPSystemSettingsDTO Convert => new MSPSystemSettingsDTO()
+        public MSPSystemSettingsDTO Convert() => new MSPSystemSettingsDTO()
         {
-            SettingKey = SettingKey,
-            SettingValue = SettingValue,
-            DTBegin = DTBegin,
-            DTUpdate = DTUpdate,
-            DTEnd = DTEnd
+            SettingKey = this.SettingKey,
+            SettingValue = this.SettingValue,
+            DTBegin = this.DTBegin,
+            DTUpdate = this.DTUpdate,
+            DTEnd = this.DTEnd
         };
     }
 }
