@@ -1,4 +1,5 @@
-﻿using MSP.Domain.Helpers;
+﻿using MSP.Domain.DTOs;
+using MSP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace MSP.Domain.Entities
 {
-    public class MSPPersonDTO: MSPBaseEntity, IConvertModel<MSPPerson>
+    public class MSPPersonDTO: MSPBaseEntityDTO, IConvertModel<MSPPerson>
     {
         public int PersonId { get; set; }
         public string? Name { get; set; }

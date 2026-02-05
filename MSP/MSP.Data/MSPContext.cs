@@ -27,8 +27,9 @@ namespace MSP.Data
             modelBuilder.Entity<MSPPerson>(entity =>
             {
                 entity.HasIndex(p => p.PersonId).IsUnique();
-                entity.Property(f => f.PersonId)
+                entity.Property(p => p.PersonId)
                         .ValueGeneratedOnAdd();
+                entity.HasIndex(p => p.Login).IsUnique();
             });
         }
     }

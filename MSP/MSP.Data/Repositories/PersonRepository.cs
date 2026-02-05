@@ -20,15 +20,13 @@ namespace MSP.Data.Repositories
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<MSPPerson> AddAsync(MSPPerson MSPPerson)
+        public async Task<MSPPerson> AddAsync(MSPPerson entity)
         {
-            if(await GetAsync(MSPPerson) != null)
-                throw new Exception($"Setting with key {MSPPerson.PersonId} already exists.");
-            MSPPerson.DTBegin = DateTime.Now;
-            MSPPerson.DTEnd = DateTime.MaxValue;
-            _context.MSPPerson.Add(MSPPerson);
+            entity.DTBegin = DateTime.Now;
+            entity.DTEnd = DateTime.MaxValue;
+            _context.MSPPerson.Add(entity);
             await _context.SaveChangesAsync();
-            return MSPPerson;
+            return entity;
         }
 
         public async Task<IEnumerable<MSPPerson>> GetAllAsync(bool enabledOnly)
@@ -38,19 +36,19 @@ namespace MSP.Data.Repositories
             return await _context.MSPPerson.ToListAsync();
         }
 
-        public async Task<MSPPerson> UpdateAsync(MSPPerson MSPPerson)
+        public async Task<MSPPerson> UpdateAsync(MSPPerson entity)
         {
-            MSPPerson.DTUpdate = DateTime.Now;
-            _context.MSPPerson.Update(MSPPerson);
+            entity.DTUpdate = DateTime.Now;
+            _context.MSPPerson.Update(entity);
             await _context.SaveChangesAsync();
-            return MSPPerson;
+            return entity;
         }
 
-        public async Task<MSPPerson> DeleteAsync(MSPPerson MSPPerson)
+        public async Task<MSPPerson> DeleteAsync(MSPPerson entity)
         {
-            MSPPerson? data = await GetAsync(MSPPerson);
+            MSPPerson? data = await GetByIdAsync(entity);
             if (data == null)
-                throw new Exception($"Setting with key {MSPPerson.PersonId} does not exist.");
+                throw new Exception($"Setting with key {entity.PersonId} does not exist.");
 
             data.DTEnd = DateTime.Now;
             _context.MSPPerson.Update(data);
@@ -58,9 +56,14 @@ namespace MSP.Data.Repositories
             return data;
         }
 
-        public async Task<MSPPerson?> GetAsync(MSPPerson entity)
+        public async Task<MSPPerson?> GetByIdAsync(MSPPerson entity)
         {
             return (await _context.MSPPerson.Where(s => s.PersonId == entity.PersonId).ToListAsync()).FirstOrDefault();
+        }
+
+        public async Task<MSPPerson?> GetByLoginAsync(MSPPerson entity)
+        {
+            return (await _context.MSPPerson.Where(s => s.Login == entity.Login).ToListAsync()).FirstOrDefault();
         }
     }
 }

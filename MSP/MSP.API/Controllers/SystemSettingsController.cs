@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MSP.API.Services;
 using MSP.Domain.BusinessInterfaces;
 using MSP.Domain.DTOs;
 using MSP.Domain.Entities;
@@ -47,14 +48,15 @@ namespace MSP.API.Controllers
         [HttpPost]
         public async Task<ActionResult<MSPSystemSettingsDTO>> Post(MSPSystemSettingsDTO mSPSystemSettings)
         {
-            try
-            {
-                return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(400, ex.Message);
-            }
+            return await HttpCustomValidator.IsValidAsync<MSPSystemSettingsDTO>( async () => await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
+            //try
+            //{
+            //    return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(400, ex.Message);
+            //}
         }
 
         [HttpPut]

@@ -10,7 +10,7 @@ using MSP.Domain.BusinessInterfaces;
 
 namespace MSP.Domain.Business
 {
-    public class PersonBusiness : IPersonBusiness
+    public class PersonBusiness : BaseBusiness, IPersonBusiness
     {
         private readonly IPersonRepository _repository;
 
@@ -27,22 +27,19 @@ namespace MSP.Domain.Business
 
         public async Task<MSPPersonDTO?> AddAsync(MSPPersonDTO MSPPerson)
         {
-            if (MSPPerson == null)
-                return null;
+            if( ValidateAsync(MSPPerson.Convert()).Result is MSPPersonDTO errorDTO)
+                return errorDTO;
             var updatedEntity = await _repository.AddAsync(MSPPerson.Convert());
             return updatedEntity?.Convert();
         }
 
         public async Task<MSPPersonDTO?> UpdateAsync(MSPPersonDTO MSPPerson)
         {
-            if (MSPPerson == null)
-                return null;
-
-            MSPPerson? data = await _repository.GetAsync(MSPPerson.Convert());
+            MSPPerson? data = await _repository.GetByIdAsync(MSPPerson.Convert());
             if (data == null)
-                throw new Exception($"Setting with key {MSPPerson.PersonId} does not exist.");
+                return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
 
-            var updatedEntity = await _repository.UpdateAsync(new MSPPerson()
+            var updatedEntity = new MSPPerson()
             {
                 PersonId = data.PersonId,
                 Name = MSPPerson.Name ?? data.Name,
@@ -51,17 +48,41 @@ namespace MSP.Domain.Business
                 DTBegin = data.DTBegin,
                 DTUpdate = data.DTUpdate,
                 DTEnd = data.DTEnd
-            });
-            return updatedEntity?.Convert();
+            };
+            if( ValidateAsync(updatedEntity).Result is MSPPersonDTO errorDTO)
+                return errorDTO;
+
+            return (await _repository.UpdateAsync(updatedEntity))?.Convert();
         }
 
-        public async Task<MSPPersonDTO?> DeleteAsync(MSPPersonDTO? MSPPerson)
+        public async Task<MSPPersonDTO?> DeleteAsync(MSPPersonDTO MSPPerson)
         {
-            if (MSPPerson == null)
-                return null;
-
             var deletedEntity = await _repository.DeleteAsync(MSPPerson.Convert());
             return deletedEntity?.Convert();
+        }
+
+        public async Task<MSPPersonDTO?> ValidateAsync(MSPPerson entity)
+        {
+            if(string.IsNullOrEmpty(entity.Login))
+                return GetErrorDTO<MSPPersonDTO>("O login é obrigatório.");
+
+            MSPPerson? dbPerson = await _repository.GetByLoginAsync(entity);
+            // verifica se é um novo registro
+            if (entity.PersonId == 0)
+            {
+                // se for novo, verifica se o login já existe
+                if (dbPerson != null)
+                    return GetErrorDTO<MSPPersonDTO>("Já existe um usuário cadastrado com este login.");
+            }
+
+            if (entity.PersonId < 0)
+            {
+                // se for atualização, verifica se o login já existe para outro usuário
+                if (dbPerson != null && dbPerson.PersonId != entity.PersonId)
+                    return GetErrorDTO<MSPPersonDTO>("Já existe um usuário cadastrado com este login.");
+            }
+
+            return null;
         }
     }
 }

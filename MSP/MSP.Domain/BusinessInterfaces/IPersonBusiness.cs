@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MSP.Domain.BusinessInterfaces
 {
-    public interface IPersonBusiness : IBaseBusiness<MSPPersonDTO>
+    public interface IPersonBusiness : IBaseBusiness<MSPPersonDTO, MSPPerson>
     {
     }
 }

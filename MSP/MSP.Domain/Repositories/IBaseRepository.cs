@@ -9,7 +9,7 @@ namespace MSP.Domain.Repositories
     {
         Task<IEntity> AddAsync(IEntity entity);
         Task<IEnumerable<IEntity>> GetAllAsync(bool enabledOnly);
-        Task<IEntity?> GetAsync(IEntity entity);
+        Task<IEntity?> GetByIdAsync(IEntity entity);
         Task<IEntity> UpdateAsync(IEntity entity);
         Task<IEntity> DeleteAsync(IEntity entity);
     }

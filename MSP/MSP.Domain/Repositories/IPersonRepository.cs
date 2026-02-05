@@ -7,6 +7,6 @@ namespace MSP.Domain.Repositories
 {
     public interface IPersonRepository : IBaseRepository<MSPPerson>
     {
-
+        Task<MSPPerson?> GetByLoginAsync(MSPPerson entity);
     }
 }
