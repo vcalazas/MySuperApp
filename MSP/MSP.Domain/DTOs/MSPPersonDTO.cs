@@ -1,11 +1,12 @@
 ﻿using MSP.Domain.DTOs;
+using MSP.Domain.Entities;
 using MSP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace MSP.Domain.Entities
+namespace MSP.Domain.DTOs
 {
     public class MSPPersonDTO: MSPBaseEntityDTO, IConvertModel<MSPPerson>
     {

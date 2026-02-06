@@ -1,4 +1,5 @@
-﻿using MSP.Domain.Helpers;
+﻿using MSP.Domain.DTOs;
+using MSP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

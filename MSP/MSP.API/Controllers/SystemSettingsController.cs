@@ -48,15 +48,14 @@ namespace MSP.API.Controllers
         [HttpPost]
         public async Task<ActionResult<MSPSystemSettingsDTO>> Post(MSPSystemSettingsDTO mSPSystemSettings)
         {
-            return await HttpCustomValidator.IsValidAsync<MSPSystemSettingsDTO>( async () => await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
-            //try
-            //{
-            //    return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
-            //}
-            //catch (Exception ex)
-            //{
-            //    return StatusCode(400, ex.Message);
-            //}
+            try
+            {
+                return StatusCode(200, await _systemSettingsBusiness.AddAsync(mSPSystemSettings));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
         }
 
         [HttpPut]
