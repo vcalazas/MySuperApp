@@ -9,5 +9,6 @@ namespace MSP.Domain.DTOs
         public DateTime? DTBegin { get; set; }
         public DateTime? DTUpdate { get; set; }
         public DateTime? DTEnd { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

@@ -69,7 +69,8 @@ builder.Services.AddDbContextPool<MSPContext>(
             opt.SetPostgresVersion(13, 0);
             opt.UseNodaTime();
         }
-    ));
+    ).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+);
 
 ServicesConfiguration.ConfigureRepositories(builder.Services);
 ServicesConfiguration.ConfigureBusiness(builder.Services);

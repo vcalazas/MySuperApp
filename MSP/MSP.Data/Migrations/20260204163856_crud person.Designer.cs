@@ -3,6 +3,7 @@ using System;
 using MSP.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MSP.Data.Migrations
 {
     [DbContext(typeof(MSPContext))]
-    partial class MSPContextModelSnapshot : ModelSnapshot
+    [Migration("20260204163856_crud person")]
+    partial class crudperson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +52,6 @@ namespace MSP.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("PersonId");
-
-                    b.HasIndex("Login")
-                        .IsUnique();
 
                     b.HasIndex("PersonId")
                         .IsUnique();

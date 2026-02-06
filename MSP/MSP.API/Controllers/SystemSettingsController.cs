@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MSP.Domain.Business;
+using MSP.API.Services;
+using MSP.Domain.BusinessInterfaces;
 using MSP.Domain.DTOs;
 using MSP.Domain.Entities;
 
