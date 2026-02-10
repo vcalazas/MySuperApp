@@ -8,6 +8,7 @@ using System.Text;
 
 namespace MSP.API.Services
 {
+    [Obsolete("JwtService está obsoleto. Processo realizado na classe AuthBusiness.")]
     public class JwtService
     {
         private readonly IConfiguration _configuration;
