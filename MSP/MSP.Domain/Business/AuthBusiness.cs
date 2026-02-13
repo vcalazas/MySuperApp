@@ -80,8 +80,6 @@ namespace MSP.Domain.Business
         {
             MSPAuthDTO token = await CreateJWTToken(dto);
 
-
-
             return new MSPAuthDTO()
             {
                 AccessToken = token.AccessToken,

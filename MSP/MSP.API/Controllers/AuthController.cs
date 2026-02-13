@@ -12,13 +12,13 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly JwtService _jwtService;
         private readonly IAuthBusiness _authBusiness;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(JwtService jwtService, IAuthBusiness authBusiness)
+        public AuthController( IAuthBusiness authBusiness, IConfiguration configuration)
         {
-            _jwtService = jwtService;
             _authBusiness = authBusiness;
+            _configuration = configuration;
         }
 
         [AllowAnonymous]
@@ -30,20 +30,22 @@ namespace WebApplication1.Controllers
 
             return result;*/
 
-            return await HttpCustomValidator.IsValidAsync<MSPAuthDTO>(async () => await _authBusiness.LoginAsync(new MSPAuthDTO()
-            {
-                PersonLogin = request.PersonLogin,
-                PersonPassworld = request.PersonPassworld,
-                DeviceType = request.DeviceType,
-                SO = request.SO,
-                Manufacturer = request.Manufacturer,
-                Model = request.Model,
-                Version = request.Version,
-                JwtConfigIssuer = _configuration["JwtConfig:Issuer"],
-                JwtConfigAudience = _configuration["JwtConfig:Audience"],
-                JwtConfigIssuerKey = _configuration["JwtConfig:Key"],
-                JwtConfigIssuerTokenValidiyMins = _configuration.GetValue<int>("JwtConfig:TokenValidiyMins"),
-            });
+            return await HttpCustomValidator.IsValidAsync<MSPAuthDTO>(async () => 
+                await _authBusiness.LoginAsync(new MSPAuthDTO()
+                    {
+                        PersonLogin = request.PersonLogin,
+                        PersonPassworld = request.PersonPassworld,
+                        DeviceType = request.DeviceType,
+                        SO = request.SO,
+                        Manufacturer = request.Manufacturer,
+                        Model = request.Model,
+                        Version = request.Version,
+                        JwtConfigIssuer = _configuration["JwtConfig:Issuer"],
+                        JwtConfigAudience = _configuration["JwtConfig:Audience"],
+                        JwtConfigIssuerKey = _configuration["JwtConfig:Key"],
+                        JwtConfigIssuerTokenValidiyMins = _configuration.GetValue<int>("JwtConfig:TokenValidiyMins"),
+                    })
+            );
         }
 
         //[AllowAnonymous]

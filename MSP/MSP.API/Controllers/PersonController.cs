@@ -20,6 +20,7 @@ namespace MSP.API.Controllers
             _personBusiness = personBusiness;
         }
 
+        [Authorize]
         [HttpGet]
         [SwaggerResponse(200, "Há registros para mostrar", typeof(IEnumerable<MSPPersonDTO>))]
         [SwaggerResponse(201, "Sem registros para mostrar", typeof(IEnumerable<MSPPersonDTO>))]
