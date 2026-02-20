@@ -10,5 +10,6 @@ namespace MSP.Domain.BusinessInterfaces
     public interface IAuthBusiness : IBaseBusiness<MSPAuthDTO, MSPAuth>
     {
         Task<MSPAuthDTO?> LoginAsync(MSPAuthDTO dto);
+        Task<MSPAuthDTO?> UpdateAsync(string? authorizationHeaderValue, MSPAuthDTO dto);
     }
 }

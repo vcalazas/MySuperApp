@@ -8,6 +8,6 @@ namespace MSP.Domain.Repositories
 {
     public interface IAuthRepository : IBaseRepository<MSPAuth>
     {
-
+        Task<MSPAuth?> GetByTokenAsync(MSPAuth entity);
     }
 }

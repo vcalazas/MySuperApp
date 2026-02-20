@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MSP.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -20,7 +21,6 @@ namespace MSP.API.Controllers
             _personBusiness = personBusiness;
         }
 
-        [Authorize]
         [HttpGet]
         [SwaggerResponse(200, "Há registros para mostrar", typeof(IEnumerable<MSPPersonDTO>))]
         [SwaggerResponse(201, "Sem registros para mostrar", typeof(IEnumerable<MSPPersonDTO>))]

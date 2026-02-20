@@ -48,17 +48,31 @@ namespace WebApplication1.Controllers
             );
         }
 
-        //[AllowAnonymous]
-        //[HttpPost("Update")]
-        //public async Task<ActionResult<UserDto>> Update(UserDto request)
-        //{
-        //    string? authorizationHeaderValue = Request.Headers["Authorization"];
+        [AllowAnonymous]
+        [HttpPut("Update")]
+        public async Task<ActionResult<MSPAuthDTO>> Update(MSPAuthDTO request)
+        {
+            string? authorizationHeaderValue = Request.Headers["Authorization"];
 
-        //    var result = await _jwtService.GenerateRefreshToken(authorizationHeaderValue, request);
-        //    if (result is null)
-        //        return Unauthorized();
+            var result = await _authBusiness.UpdateAsync(authorizationHeaderValue, new MSPAuthDTO()
+            {
+                AuthId = request.AuthId,
+                PersonLogin = request.PersonLogin,
+                PersonPassworld = request.PersonPassworld,
+                DeviceType = request.DeviceType,
+                SO = request.SO,
+                Manufacturer = request.Manufacturer,
+                Model = request.Model,
+                Version = request.Version,
+                JwtConfigIssuer = _configuration["JwtConfig:Issuer"],
+                JwtConfigAudience = _configuration["JwtConfig:Audience"],
+                JwtConfigIssuerKey = _configuration["JwtConfig:Key"],
+                JwtConfigIssuerTokenValidiyMins = _configuration.GetValue<int>("JwtConfig:TokenValidiyMins")
+            });
+            if (result is null)
+                return Unauthorized();
 
-        //    return result;
-        //}
+            return result;
+        }
     }
 }

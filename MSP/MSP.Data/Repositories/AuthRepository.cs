@@ -62,5 +62,10 @@ namespace MSP.Data.Repositories
         {
             return (await _context.MSPAuth.Where(s => s.AuthId == entity.AuthId).ToListAsync()).FirstOrDefault();
         }
+
+        public async Task<MSPAuth?> GetByTokenAsync(MSPAuth entity)
+        {
+            return (await _context.MSPAuth.Where(s => s.AccessToken == entity.AccessToken).ToListAsync()).FirstOrDefault();
+        }
     }
 }

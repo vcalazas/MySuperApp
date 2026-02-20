@@ -17,10 +17,12 @@ namespace MSP.Domain.Business
     public class AuthBusiness : BaseBusiness, IAuthBusiness
     {
         private readonly IAuthRepository _repository;
+        private readonly IPersonRepository _personRepository;
 
-        public AuthBusiness(IAuthRepository repository)
+        public AuthBusiness(IAuthRepository repository, IPersonRepository personRepository)
         {
             _repository = repository;
+            _personRepository = personRepository;
         }
 
         public async Task<IEnumerable<MSPAuthDTO>> GetAllAsync(bool enabledOnly)
@@ -78,6 +80,49 @@ namespace MSP.Domain.Business
 
         public async Task<MSPAuthDTO?> LoginAsync(MSPAuthDTO dto)
         {
+
+            MSPPerson? person = await _personRepository.GetByLoginAsync(new MSPPerson() { 
+                Login = dto.PersonLogin, 
+                Passworld = dto.PersonPassworld 
+            });
+
+            if (person == null || !person.Passworld.Equals(dto.PersonPassworld))
+                return GetErrorDTO<MSPAuthDTO>("Login ou senha inválidos.");
+
+            
+
+            MSPAuthDTO token = await CreateJWTToken(dto);
+
+            await _repository.AddAsync(new MSPAuth()
+            {
+                PersonId = person.PersonId,
+                AuthId = dto.AuthId,
+                DeviceType = dto.DeviceType,
+                SO = dto.SO,
+                Manufacturer = dto.Manufacturer,
+                Model = dto.Model,
+                Version = dto.Version,
+                AccessToken = token.AccessToken,
+            });
+
+            return new MSPAuthDTO()
+            {
+                AccessToken = token.AccessToken,
+                ExpiresIn = token.ExpiresIn,
+            };
+        }
+
+        public async Task<MSPAuthDTO?> UpdateAsync(string? authorizationHeaderValue, MSPAuthDTO dto)
+        {
+            if (string.IsNullOrEmpty(authorizationHeaderValue) || !authorizationHeaderValue.StartsWith("Bearer "))
+                return GetErrorDTO<MSPAuthDTO>("Não há tokem a ser validado.");
+
+            MSPAuth? temp = await _repository.GetByTokenAsync(new MSPAuth() { 
+                AccessToken = authorizationHeaderValue.Substring("Bearer ".Length).Trim() });
+
+            if(temp == null)
+                return GetErrorDTO<MSPAuthDTO>("Token inválido.");
+
             MSPAuthDTO token = await CreateJWTToken(dto);
 
             return new MSPAuthDTO()
@@ -101,7 +146,7 @@ namespace MSP.Domain.Business
                 Expires = tokenExpiryTimeStamp,
                 Issuer = request.JwtConfigIssuer,
                 Audience = request.JwtConfigAudience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(request.JwtConfigIssuerKey)), SecurityAlgorithms.HmacSha512Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(request.JwtConfigIssuerKey)), SecurityAlgorithms.HmacSha256),
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
