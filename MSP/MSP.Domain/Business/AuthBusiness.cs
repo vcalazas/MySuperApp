@@ -33,37 +33,12 @@ namespace MSP.Domain.Business
 
         public async Task<MSPAuthDTO?> AddAsync(MSPAuthDTO entity)
         {
-            if(ValidateAsync(entity.Convert()).Result is MSPAuthDTO errorDTO)
-                return errorDTO;
-            var updatedEntity = await _repository.AddAsync(entity.Convert());
-            return updatedEntity?.Convert();
+            return GetErrorDTO<MSPAuthDTO>("Não é possivel criar um login.");
         }
 
         public async Task<MSPAuthDTO?> UpdateAsync(MSPAuthDTO entity)
         {
-            MSPAuth? data = await _repository.GetByIdAsync(entity.Convert());
-            if (data == null)
-                return GetErrorDTO<MSPAuthDTO>("Registro não encontrado.");
-
-            var updatedEntity = new MSPAuth()
-            {
-                AuthId = data.AuthId,
-                PersonId = data.PersonId,
-
-                DeviceType = entity.DeviceType,
-                SO = entity.SO,
-                Manufacturer = entity.Manufacturer,
-                Model = entity.Model,
-                Version = entity.Version,
-
-                DTBegin = data.DTBegin,
-                DTUpdate = data.DTUpdate,
-                DTEnd = data.DTEnd
-            };
-            if( ValidateAsync(updatedEntity).Result is MSPAuthDTO errorDTO)
-                return errorDTO;
-
-            return (await _repository.UpdateAsync(updatedEntity))?.Convert();
+            return GetErrorDTO<MSPAuthDTO>("Não é possivel editar um login.");
         }
 
         public async Task<MSPAuthDTO?> DeleteAsync(MSPAuthDTO entity)
@@ -74,7 +49,6 @@ namespace MSP.Domain.Business
 
         public async Task<MSPAuthDTO?> ValidateAsync(MSPAuth entity)
         {
-
             return null;
         }
 
@@ -82,34 +56,14 @@ namespace MSP.Domain.Business
         {
 
             MSPPerson? person = await _personRepository.GetByLoginAsync(new MSPPerson() { 
-                Login = dto.PersonLogin, 
-                Passworld = dto.PersonPassworld 
+                Login = dto.PersonLogin,
             });
 
-            if (person == null || !person.Passworld.Equals(dto.PersonPassworld))
+            if (person == null || string.IsNullOrEmpty(person.Passworld) || !person.Passworld.Equals(dto.PersonPassworld?.HashPassword()))
                 return GetErrorDTO<MSPAuthDTO>("Login ou senha inválidos.");
+            dto.PersonId = person.PersonId;
 
-            
-
-            MSPAuthDTO token = await CreateJWTToken(dto);
-
-            await _repository.AddAsync(new MSPAuth()
-            {
-                PersonId = person.PersonId,
-                AuthId = dto.AuthId,
-                DeviceType = dto.DeviceType,
-                SO = dto.SO,
-                Manufacturer = dto.Manufacturer,
-                Model = dto.Model,
-                Version = dto.Version,
-                AccessToken = token.AccessToken,
-            });
-
-            return new MSPAuthDTO()
-            {
-                AccessToken = token.AccessToken,
-                ExpiresIn = token.ExpiresIn,
-            };
+            return await LoginInternal(dto);
         }
 
         public async Task<MSPAuthDTO?> UpdateAsync(string? authorizationHeaderValue, MSPAuthDTO dto)
@@ -122,8 +76,33 @@ namespace MSP.Domain.Business
 
             if(temp == null)
                 return GetErrorDTO<MSPAuthDTO>("Token inválido.");
+            dto.PersonId = temp.PersonId;
 
+            await _repository.DeleteAsync(temp);
+
+            return await LoginInternal(dto);
+        }
+
+        private async Task<MSPAuthDTO> LoginInternal(MSPAuthDTO dto)
+        {
             MSPAuthDTO token = await CreateJWTToken(dto);
+
+            MSPAuth mSPAuth = new MSPAuth()
+            {
+                PersonId = dto.PersonId,
+                AuthId = dto.AuthId,
+                DeviceType = dto.DeviceType,
+                SO = dto.SO,
+                Manufacturer = dto.Manufacturer,
+                Model = dto.Model,
+                Version = dto.Version,
+                AccessToken = token.AccessToken,
+            };
+
+            if (ValidateAsync(mSPAuth).Result is MSPAuthDTO errorDTO)
+                return errorDTO;
+
+            await _repository.AddAsync(mSPAuth);
 
             return new MSPAuthDTO()
             {

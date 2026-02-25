@@ -22,7 +22,6 @@ namespace MSP.Domain.Entities
                 PersonId = this.PersonId,
                 Name = this.Name,
                 Login = this.Login,
-                Passworld = this.Passworld,
                 DTBegin = this.DTBegin,
                 DTUpdate = this.DTUpdate,
                 DTEnd = this.DTEnd
