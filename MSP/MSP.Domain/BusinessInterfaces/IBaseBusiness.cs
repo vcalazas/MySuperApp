@@ -11,7 +11,6 @@ namespace MSP.Domain.BusinessInterfaces
         Task<IEnumerable<IDTO>> GetAllAsync(bool enabledOnly);
         Task<IDTO?> AddAsync(IDTO dto);
         Task<IDTO> UpdateAsync(IDTO dto);
-        Task<IDTO> ChangePassworldAsync(IDTO dto);
         Task<IDTO> DeleteAsync(IDTO dto);
         Task<IDTO?> ValidateAsync(IEntity entity);
     }
