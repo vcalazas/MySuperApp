@@ -14,7 +14,7 @@ namespace MSP.Domain.DTOs
         public string? Name { get; set; }
         public string? Login { get; set; }
         public string? Passworld { get; set; }
-        public string? ConfirmaPassworld { get; set; }
+        public string? ConfirmPassworld { get; set; }
         public string? OldPassworld { get; set; }
 
         public MSPPerson Convert()

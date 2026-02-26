@@ -63,7 +63,7 @@ namespace MSP.Domain.Business
                 return GetErrorDTO<MSPAuthDTO>("Login ou senha inválidos.");
             dto.PersonId = person.PersonId;
 
-            return await LoginInternal(dto);
+            return await LoginInternal(dto, person);
         }
 
         public async Task<MSPAuthDTO?> UpdateAsync(string? authorizationHeaderValue, MSPAuthDTO dto)
@@ -76,16 +76,21 @@ namespace MSP.Domain.Business
 
             if(temp == null)
                 return GetErrorDTO<MSPAuthDTO>("Token inválido.");
+
+            MSPPerson? person = await _personRepository.GetByLoginAsync(new MSPPerson(){Login = dto.PersonLogin});
+            if (person == null)
+                return GetErrorDTO<MSPAuthDTO>("Autenticação inválida.");
+
             dto.PersonId = temp.PersonId;
 
             await _repository.DeleteAsync(temp);
 
-            return await LoginInternal(dto);
+            return await LoginInternal(dto, person);
         }
 
-        private async Task<MSPAuthDTO> LoginInternal(MSPAuthDTO dto)
+        private async Task<MSPAuthDTO> LoginInternal(MSPAuthDTO dto, MSPPerson person)
         {
-            MSPAuthDTO token = await CreateJWTToken(dto);
+            MSPAuthDTO token = await CreateJWTToken(dto, person);
 
             MSPAuth mSPAuth = new MSPAuth()
             {
@@ -111,7 +116,7 @@ namespace MSP.Domain.Business
             };
         }
 
-        public async Task<MSPAuthDTO> CreateJWTToken(MSPAuthDTO request)
+        public async Task<MSPAuthDTO> CreateJWTToken(MSPAuthDTO request, MSPPerson person)
         {
             string secretToken = GenerateSecretToken();
             var tokenExpiryTimeStamp = DateTime.UtcNow.AddMinutes(request.JwtConfigIssuerTokenValidiyMins??0);
@@ -120,7 +125,8 @@ namespace MSP.Domain.Business
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sid, secretToken)
+                    new Claim("PersonId", person.PersonId.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Sid, secretToken),
                 }),
                 Expires = tokenExpiryTimeStamp,
                 Issuer = request.JwtConfigIssuer,

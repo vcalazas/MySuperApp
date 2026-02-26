@@ -37,6 +37,30 @@ namespace MSP.Domain.Business
             return updatedEntity?.Convert();
         }
 
+        public async Task<MSPPersonDTO?> ChangePassworldAsync(MSPPersonDTO mSPPerson)
+        {
+            if(mSPPerson.Passworld == null || mSPPerson.Passworld.Equals(mSPPerson.OldPassworld))
+                return GetErrorDTO<MSPPersonDTO>("A nova senha não pode ser igual a anterior.");
+
+            if (!mSPPerson.Passworld.Equals(mSPPerson.ConfirmPassworld))
+                return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
+
+            MSPPerson? updatedEntity = await _repository.GetByIdAsync(mSPPerson.Convert());
+
+            if (updatedEntity == null)
+                return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
+
+            if (updatedEntity.Passworld == null || updatedEntity.Passworld.Equals(mSPPerson.OldPassworld))
+                return GetErrorDTO<MSPPersonDTO>("Sehna antiga inválida.");
+
+            updatedEntity.Passworld = mSPPerson.Passworld?.HashPassword();
+
+            if (ValidateAsync(updatedEntity).Result is MSPPersonDTO errorDTO)
+                return errorDTO;
+
+            return (await _repository.UpdateAsync(updatedEntity))?.Convert();
+        }
+
         public async Task<MSPPersonDTO?> UpdateAsync(MSPPersonDTO mSPPerson)
         {
             MSPPerson? data = await _repository.GetByIdAsync(mSPPerson.Convert());

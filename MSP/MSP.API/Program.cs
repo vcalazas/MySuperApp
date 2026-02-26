@@ -49,7 +49,12 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JwtConfig:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Key"])),
         ValidateIssuer = true,
-
+        ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 },
+        ValidateAudience = true,
+        ValidateSignatureLast = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudiences = new[] { builder.Configuration["JwtConfig:Audience"] },
     };
 });
 builder.Services.AddAuthorization();
