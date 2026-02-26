@@ -14,6 +14,8 @@ namespace MSP.Domain.DTOs
         public string? Name { get; set; }
         public string? Login { get; set; }
         public string? Passworld { get; set; }
+        public string? ConfirmPassworld { get; set; }
+        public string? OldPassworld { get; set; }
 
         public MSPPerson Convert()
         {
@@ -22,7 +24,6 @@ namespace MSP.Domain.DTOs
                 PersonId = this.PersonId,
                 Name = this.Name,
                 Login = this.Login,
-                Passworld = this.Passworld,
                 DTBegin = this.DTBegin,
                 DTUpdate = this.DTUpdate,
                 DTEnd = this.DTEnd

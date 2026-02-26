@@ -25,26 +25,54 @@ namespace MSP.Domain.Business
             return list.ConvertAll();
         }
 
-        public async Task<MSPPersonDTO?> AddAsync(MSPPersonDTO MSPPerson)
+        public async Task<MSPPersonDTO?> AddAsync(MSPPersonDTO mSPPerson)
         {
-            if( ValidateAsync(MSPPerson.Convert()).Result is MSPPersonDTO errorDTO)
+            if( ValidateAsync(mSPPerson.Convert()).Result is MSPPersonDTO errorDTO)
                 return errorDTO;
-            var updatedEntity = await _repository.AddAsync(MSPPerson.Convert());
+
+            MSPPerson? data = mSPPerson.Convert();
+            data.Passworld = mSPPerson.Passworld?.HashPassword();
+
+            var updatedEntity = await _repository.AddAsync(data);
             return updatedEntity?.Convert();
         }
 
-        public async Task<MSPPersonDTO?> UpdateAsync(MSPPersonDTO MSPPerson)
+        public async Task<MSPPersonDTO?> ChangePassworldAsync(MSPPersonDTO mSPPerson)
         {
-            MSPPerson? data = await _repository.GetByIdAsync(MSPPerson.Convert());
+            if(mSPPerson.Passworld == null || mSPPerson.Passworld.Equals(mSPPerson.OldPassworld))
+                return GetErrorDTO<MSPPersonDTO>("A nova senha não pode ser igual a anterior.");
+
+            if (!mSPPerson.Passworld.Equals(mSPPerson.ConfirmPassworld))
+                return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
+
+            MSPPerson? updatedEntity = await _repository.GetByIdAsync(mSPPerson.Convert());
+
+            if (updatedEntity == null)
+                return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
+
+            if (updatedEntity.Passworld == null || updatedEntity.Passworld.Equals(mSPPerson.OldPassworld))
+                return GetErrorDTO<MSPPersonDTO>("Sehna antiga inválida.");
+
+            updatedEntity.Passworld = mSPPerson.Passworld?.HashPassword();
+
+            if (ValidateAsync(updatedEntity).Result is MSPPersonDTO errorDTO)
+                return errorDTO;
+
+            return (await _repository.UpdateAsync(updatedEntity))?.Convert();
+        }
+
+        public async Task<MSPPersonDTO?> UpdateAsync(MSPPersonDTO mSPPerson)
+        {
+            MSPPerson? data = await _repository.GetByIdAsync(mSPPerson.Convert());
             if (data == null)
                 return GetErrorDTO<MSPPersonDTO>("Registro não encontrado.");
 
             var updatedEntity = new MSPPerson()
             {
                 PersonId = data.PersonId,
-                Name = MSPPerson.Name ?? data.Name,
-                Login = MSPPerson.Login ?? data.Login,
-                Passworld = MSPPerson.Passworld ?? data.Passworld,
+                Name = mSPPerson.Name ?? data.Name,
+                Login = mSPPerson.Login ?? data.Login,
+                Passworld = data.Passworld,
                 DTBegin = data.DTBegin,
                 DTUpdate = data.DTUpdate,
                 DTEnd = data.DTEnd
@@ -55,9 +83,9 @@ namespace MSP.Domain.Business
             return (await _repository.UpdateAsync(updatedEntity))?.Convert();
         }
 
-        public async Task<MSPPersonDTO?> DeleteAsync(MSPPersonDTO MSPPerson)
+        public async Task<MSPPersonDTO?> DeleteAsync(MSPPersonDTO mSPPerson)
         {
-            var deletedEntity = await _repository.DeleteAsync(MSPPerson.Convert());
+            var deletedEntity = await _repository.DeleteAsync(mSPPerson.Convert());
             return deletedEntity?.Convert();
         }
 
@@ -75,7 +103,7 @@ namespace MSP.Domain.Business
                     return GetErrorDTO<MSPPersonDTO>("Já existe um usuário cadastrado com este login.");
             }
 
-            if (entity.PersonId < 0)
+            if (entity.PersonId > 0)
             {
                 // se for atualização, verifica se o login já existe para outro usuário
                 if (dbPerson != null && dbPerson.PersonId != entity.PersonId)

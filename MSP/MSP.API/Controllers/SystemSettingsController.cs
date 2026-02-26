@@ -8,6 +8,7 @@ using MSP.Domain.Entities;
 
 namespace MSP.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SystemSettingsController : ControllerBase

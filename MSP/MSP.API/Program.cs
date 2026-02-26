@@ -20,11 +20,12 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v2", new OpenApiInfo { Title = "My API", Version = "v2" });
-    c.OperationFilter<SecurityRequirementsOperationFilter>();
     c.EnableAnnotations();
     c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
+        Name = "Authorization",
+        In = ParameterLocation.Header,
         Scheme = "bearer",
         BearerFormat = "JWT",
         Description = "JWT Authorization header using the Bearer scheme."
@@ -38,27 +39,25 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
         ValidAudience = builder.Configuration["JwtConfig:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Key"])),
         ValidateIssuer = true,
+        ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 },
         ValidateAudience = true,
+        ValidateSignatureLast = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        SaveSigninToken = true,
-        
+        ValidAudiences = new[] { builder.Configuration["JwtConfig:Audience"] },
     };
 });
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<JwtService>();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddDbContextPool<MSPContext>(
@@ -86,12 +85,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.MapSwagger();
+    app.UseSwagger();    
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "My API");
     });
+    app.MapSwagger();
 }
 
 app.UseHttpsRedirection();

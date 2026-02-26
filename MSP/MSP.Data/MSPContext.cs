@@ -12,6 +12,7 @@ namespace MSP.Data
     {
         public virtual DbSet<MSPSystemSettings> MSPSystemSettings { get; set; }
         public virtual DbSet<MSPPerson> MSPPerson { get; set; }
+        public virtual DbSet<MSPAuth> MSPAuth { get; set; }
         public static int InstanceCount;
 
         public MSPContext(DbContextOptions options) : base(options)

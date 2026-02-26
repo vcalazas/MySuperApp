@@ -8,5 +8,6 @@ namespace MSP.Domain.BusinessInterfaces
 {
     public interface IPersonBusiness : IBaseBusiness<MSPPersonDTO, MSPPerson>
     {
+        Task<MSPPersonDTO> ChangePassworldAsync(MSPPersonDTO dto);
     }
 }

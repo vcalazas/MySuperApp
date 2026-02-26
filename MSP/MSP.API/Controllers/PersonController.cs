@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MSP.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -36,6 +37,15 @@ namespace MSP.API.Controllers
             return await HttpCustomValidator.IsValidListAsync<MSPPersonDTO>(async () => await _personBusiness.GetAllAsync(true));
         }
 
+        [AllowAnonymous]
+        [HttpPost("newAccount")]
+        [SwaggerResponse(200, "Pessoa registrada", typeof(MSPPersonDTO))]
+        [SwaggerResponse(422, "Falha na validação", typeof(MSPPersonDTO))]
+        public async Task<ActionResult<MSPPersonDTO>> PostNewAccount(MSPPersonDTO MSPPerson)
+        {
+            return await HttpCustomValidator.IsValidAsync<MSPPersonDTO>(async () => await _personBusiness.AddAsync(MSPPerson));
+        }
+
         [HttpPost]
         [SwaggerResponse(200, "Pessoa registrada", typeof(MSPPersonDTO))]
         [SwaggerResponse(422, "Falha na validação", typeof(MSPPersonDTO))]
@@ -50,6 +60,14 @@ namespace MSP.API.Controllers
         public async Task<ActionResult<MSPPersonDTO>> Put(MSPPersonDTO MSPPerson)
         {
             return await HttpCustomValidator.IsValidAsync<MSPPersonDTO>(async () => await _personBusiness.UpdateAsync(MSPPerson));
+        }
+
+        [HttpPut("changePassworld")]
+        [SwaggerResponse(200, "Pessoa atualizada", typeof(MSPPersonDTO))]
+        [SwaggerResponse(422, "Falha na validação", typeof(MSPPersonDTO))]
+        public async Task<ActionResult<MSPPersonDTO>> PutChangePassworld(MSPPersonDTO MSPPerson)
+        {
+            return await HttpCustomValidator.IsValidAsync<MSPPersonDTO>(async () => await _personBusiness.ChangePassworldAsync(MSPPerson));
         }
 
         [HttpDelete]

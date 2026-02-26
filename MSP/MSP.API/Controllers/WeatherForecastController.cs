@@ -5,6 +5,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -14,17 +15,10 @@ namespace WebApplication1.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         ];
 
-        [Authorize]
-        [HttpGet(Name = "GetWeatherForecast")]
-        //[SwaggerOperation(
-        //    Summary = "Creates a new product",
-        //    Description = "Requires admin privileges",
-        //    OperationId = "CreateProduct",
-        //    Tags = ["Purchase", "Products"]
-        //)]
-        //[Obsolete("This endpoint is deprecated. Use the new endpoint instead.")]
+        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            string userAgent = Request.Headers["Authorization"].ToString();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

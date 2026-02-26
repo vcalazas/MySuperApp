@@ -12,6 +12,7 @@ namespace MSP.API.Services
         {
             services.AddTransient<ISystemSettingsRepository, SystemSettingsRepository>();
             services.AddTransient<IPersonRepository, PersonRepository>();
+            services.AddTransient<IAuthRepository, AuthRepository>();
             return services;
         }
 
@@ -19,6 +20,7 @@ namespace MSP.API.Services
         {
             services.AddTransient<ISystemSettingsBusiness, SystemSettingsBusiness>();
             services.AddTransient<IPersonBusiness, PersonBusiness>();
+            services.AddTransient<IAuthBusiness, AuthBusiness>();
             return services;
         }
 
